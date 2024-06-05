@@ -13,21 +13,21 @@ INSERT INTO proveedor VALUES(null, 'Pan Comido', 1122014784, 'pancomido@gmail.co
 INSERT INTO proveedor VALUES(null, 'Past-El', 1145467079, 'past-el@gmail.com');
 INSERT INTO proveedor VALUES(null, 'Papelera Beba', 1160605456, 'bebapapeles@ventas.com');
 
-INSERT INTO producto VALUES (null, 'Espreso', 1200, 'Cafe espreso', 2); 
-INSERT INTO producto VALUES (null, 'Americano', 1300, 'Cafe americano', 2); -- 2
-INSERT INTO producto VALUES (null, 'Cafe con leche', 1500, 'Cafe c/leche', 2); -- 3
-INSERT INTO producto VALUES (null, 'Cortado', 1200, 'Cafe cortado', 2); -- 4
-INSERT INTO producto VALUES (null, 'Tostado', 2500, 'Toscado jamos/queso', 3); -- 5
-INSERT INTO producto VALUES (null, 'Torta chocolate', 3000, 'Porcion de torta chocolate', 1); -- 6
-INSERT INTO producto VALUES (null, 'Brownie', 2700, 'Porcion de brownie', 2); -- 7
-INSERT INTO producto VALUES (null, 'Medialunas de jamon y queso', 3200, null, 4); -- 8
-INSERT INTO producto VALUES (null, 'Infusion', 1100, 'Taza de infusion', 5); -- 9
-INSERT INTO producto VALUES (null, 'Vaso de leche', 1200, null, 7); -- 10
-INSERT INTO producto VALUES (null, 'Factura', 900, 'Factura a eleccion', 6); -- 11
-INSERT INTO producto VALUES (null, 'Cheese cake', 3100, 'Porcion de cheese cake', 9); -- 12
-INSERT INTO producto VALUES (null, 'Tostada', 1200, null, 8); -- 13
-INSERT INTO producto VALUES (null, 'Jugo', 1200, 'vaso de jugo a eleccion', 7); -- 14
-INSERT INTO producto VALUES (null, 'Yogur', 2100, null, 7); -- 15
+INSERT INTO producto VALUES (null, 'Espreso', 1200, 'Cafe espreso', 2, 22); 
+INSERT INTO producto VALUES (null, 'Americano', 1300, 'Cafe americano', 2, 55); -- 2
+INSERT INTO producto VALUES (null, 'Cafe con leche', 1500, 'Cafe c/leche', 2, 120); -- 3
+INSERT INTO producto VALUES (null, 'Cortado', 1200, 'Cafe cortado', 2, 7); -- 4
+INSERT INTO producto VALUES (null, 'Tostado', 2500, 'Toscado jamos/queso', 3, 37); -- 5
+INSERT INTO producto VALUES (null, 'Torta chocolate', 3000, 'Porcion de torta chocolate', 1, 16); -- 6
+INSERT INTO producto VALUES (null, 'Brownie', 2700, 'Porcion de brownie', 2, 14); -- 7
+INSERT INTO producto VALUES (null, 'Medialunas de jamon y queso', 3200, null, 4, 68); -- 8
+INSERT INTO producto VALUES (null, 'Infusion', 1100, 'Taza de infusion', 5, 3); -- 9
+INSERT INTO producto VALUES (null, 'Vaso de leche', 1200, null, 7, 0); -- 10
+INSERT INTO producto VALUES (null, 'Factura', 900, 'Factura a eleccion', 6, 12); -- 11
+INSERT INTO producto VALUES (null, 'Cheese cake', 3100, 'Porcion de cheese cake', 9, 10); -- 12
+INSERT INTO producto VALUES (null, 'Tostada', 1200, null, 8, 70); -- 13
+INSERT INTO producto VALUES (null, 'Jugo', 1200, 'vaso de jugo a eleccion', 7, 120); -- 14
+INSERT INTO producto VALUES (null, 'Yogur', 2100, null, 7, 64); -- 15
 
 INSERT INTO cargo VALUES(null, 'Mesero', 560000, TRUE);
 INSERT INTO cargo VALUES(null, 'Bachero', 490000, TRUE);
@@ -129,4 +129,9 @@ UPDATE orden SET total_orden = 1500, medio_pago_id_medio_pago = 7 WHERE id_orden
 
 
 -- EJERCICIO 6
+
+SELECT COUNT(id_producto) AS cantidad_productos_registrados FROM producto;
+SELECT COUNT(id_empleado) AS cantidad_meseros FROM empleado WHERE cargo_id = 1;
+SELECT COUNT(id_medio_pago) AS cantidad_medios_pago FROM medio_pago;
+SELECT COUNT(id_producto) AS cantidad_productos_escasos FROM producto WHERE stock_producto < 9;
 
