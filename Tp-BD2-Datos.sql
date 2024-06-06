@@ -130,8 +130,19 @@ UPDATE orden SET total_orden = 1500, medio_pago_id_medio_pago = 7 WHERE id_orden
 
 -- EJERCICIO 6
 
-SELECT COUNT(id_producto) AS cantidad_productos_registrados FROM producto;
-SELECT COUNT(id_empleado) AS cantidad_meseros FROM empleado WHERE cargo_id = 1;
-SELECT COUNT(id_medio_pago) AS cantidad_medios_pago FROM medio_pago;
-SELECT COUNT(id_producto) AS cantidad_productos_escasos FROM producto WHERE stock_producto < 9;
+SELECT COUNT(id_producto) AS cantidad_productos_registrados FROM producto; -- Cuenta la cantidad de productos registrados
+SELECT COUNT(id_empleado) AS cantidad_meseros FROM empleado WHERE cargo_id = 1; -- Cuenta la cantidad de empleados registrados como meseros
+SELECT COUNT(id_medio_pago) AS cantidad_medios_pago FROM medio_pago; -- Cuenta la cantidad de medios de pago
+SELECT COUNT(id_producto) AS cantidad_productos_escasos FROM producto WHERE stock_producto < 10; -- Cuenta la cantidad de productos cuyo stock sea menor a 10
 
+SELECT SUM(total_orden) FROM orden WHERE fecha_orden = '2024-01-21'; -- Suma el total facturado en un dia especifico (en este ejemplo el 21-01-2024)
+SELECT SUM(total_orden) FROM orden WHERE empleado_id_empleado = 2; -- Suma el total de lo que lleva cobrado un mesero segun el id
+SELECT SUM(cantidad_orden_producto) AS productos_con_cafe_vendidos FROM producto INNER JOIN producto_orden ON producto.id_producto = producto_orden.producto_id_producto WHERE descripcion_producto LIKE '%CAFE%' ; -- Suma la cantidad de productos que se vendieron que contienen Cafe (se toma en cuenta en la descripcion del producto)
+SELECT SUM(stock_producto) AS stock_de_porciones FROM producto WHERE descripcion_producto LIKE('%PORCION%'); -- Suma la cantidad de porciones en stock
+
+SELECT AVG(total_orden) FROM orden WHERE fecha_orden = '2024-01-21'; -- Obtiene el promedio de la facturacion del dia especificado
+SELECT AVG(salario_cargo) promedio_sueldo FROM empleado INNER JOIN cargo ON empleado.cargo_id = cargo.id_cargo WHERE nombre_cargo != 'apoderado'; -- Promedio del sueldo de los empleados excluyendo al apoderado
+SELECT AVG(total_orden) FROM orden WHERE empleado_id_empleado = 2; -- Promedio de lo facturado por el mesero segun su id
+
+SELECT MAX(total_orden) AS Maxima_orden_facturada FROM orden; -- Devuelve la orden con el monto maximo
+SELECT MAX(precio_producto) as Cafe_mas_caro from producto WHERE descripcion_producto LIKE '%cafe%'; --Devuelve el cafe con mayor precio
