@@ -144,5 +144,7 @@ SELECT AVG(total_orden) FROM orden WHERE fecha_orden = '2024-01-21'; -- Obtiene 
 SELECT AVG(salario_cargo) promedio_sueldo FROM empleado INNER JOIN cargo ON empleado.cargo_id = cargo.id_cargo WHERE nombre_cargo != 'apoderado'; -- Promedio del sueldo de los empleados excluyendo al apoderado
 SELECT AVG(total_orden) FROM orden WHERE empleado_id_empleado = 2; -- Promedio de lo facturado por el mesero segun su id
 
-SELECT MAX(total_orden) AS Maxima_orden_facturada FROM orden; -- Devuelve la orden con el monto maximo
-SELECT MAX(precio_producto) as Cafe_mas_caro from producto WHERE descripcion_producto LIKE '%cafe%'; --Devuelve el cafe con mayor precio
+SELECT id_orden AS orden_mayor_monto, total_orden as monto FROM orden WHERE total_orden = (SELECT MAX(total_orden) FROM orden); -- Devuelve la orden con el monto maximo
+SELECT nombre_producto AS cafe_mas_caro, precio_producto FROM producto WHERE precio_producto = (SELECT MAX(precio_producto) FROM producto WHERE descripcion_producto LIKE '%CAFE%'); -- Devuelve el cafe mas caro
+SELECT nombre_medio_pago, descuento_medio_pago FROM medio_pago WHERE descuento_medio_pago = (SELECT MAX(descuento_medio_pago) FROM medio_pago); -- Devuelve el medio de pago con mas descuento
+SELECT nombre_cargo AS puesto_mas_pago , salario_cargo FROM cargo WHERE salario_cargo = (SELECT MAX(salario_cargo) FROM cargo WHERE nombre_cargo != 'apoderado'); -- Devuelve el puesto mejor pago diferente del apoderado
