@@ -1,5 +1,80 @@
 -- TP INTEGRADOR
 
+
+-- EJERCICIO 3
+
+CREATE DATABASE tp_cafeteria;
+
+USE tp_cafeteria;
+
+
+CREATE TABLE proveedor (
+	id_proveedor INT AUTO_INCREMENT PRIMARY KEY,
+	nombre_proveedor VARCHAR(60) NOT NULL,
+	telefono_proveedor INT(10) NOT NULL,
+	email_proveedor VARCHAR(100) NOT NULL
+	);
+
+CREATE TABLE producto(
+	id_producto INT AUTO_INCREMENT PRIMARY KEY,
+	nombre_producto VARCHAR(60) NOT NULL,
+	precio_producto FLOAT NOT NULL,
+	descripcion_producto VARCHAR(60) NULL,
+	proveedor_id_proveedor INT NOT NULL,
+	stock_producto INT NOT NULL,
+	FOREIGN KEY (proveedor_id_proveedor) REFERENCES proveedor(id_proveedor)
+);
+
+CREATE TABLE cargo (
+	id_cargo INT AUTO_INCREMENT PRIMARY KEY,
+	nombre_cargo VARCHAR(45) NOT NULL,
+	salario_cargo INT NOT NULL,
+	asistencia_cargo TINYINT NULL
+); 
+
+CREATE TABLE empleado (
+	id_empleado INT AUTO_INCREMENT PRIMARY KEY,
+	nombre_empleado VARCHAR(60) NOT NULL,
+	telefono_empleado INT NOT NULL,
+	email_empleado VARCHAR(100) NOT NULL,
+	cargo_id INT NOT NULL,
+	FOREIGN KEY (cargo_id) REFERENCES cargo(id_cargo)
+);
+
+CREATE TABLE medio_pago (
+	id_medio_pago INT AUTO_INCREMENT PRIMARY KEY,
+	nombre_medio_pago VARCHAR(45) NOT NULL,
+	recargo_medio_pago TINYINT NULL,
+	descuento_medio_pago FLOAT NULL	
+);
+
+CREATE TABLE orden (
+	id_orden INT AUTO_INCREMENT PRIMARY KEY,
+	fecha_orden DATE NOT NULL,
+	mesa_orden INT NULL,
+	total_orden FLOAT NOT NULL,
+	empleado_id_empleado INT NOT NULL,
+	medio_pago_id_medio_pago INT NOT NULL,
+	FOREIGN KEY (empleado_id_empleado) REFERENCES empleado(id_empleado),
+	FOREIGN KEY (medio_pago_id_medio_pago) REFERENCES medio_pago(id_medio_pago)
+);
+
+CREATE TABLE producto_orden (
+	producto_id_producto INT NOT NULL,
+	orden_id_orden INT NOT NULL,
+	cantidad_orden_producto INT NOT NULL,
+	detalle_orden_producto VARCHAR(55) NULL,
+	PRIMARY KEY (producto_id_producto, orden_id_orden),
+	FOREIGN KEY (producto_id_producto) REFERENCES producto(id_producto),
+	FOREIGN KEY (orden_id_orden) REFERENCES orden(id_orden)
+	
+);
+
+-- INDICE
+
+CREATE INDEX idx_producto ON producto(nombre_producto);
+CREATE INDEX idx_empleado ON empleado(nombre_empleado);
+
 -- EJERCICIO 4
 
 INSERT INTO proveedor VALUES(null, 'Pasteleria Vignolo el Pollo', 1154789456, 'pollopasteleria@gmail.com');
@@ -148,3 +223,24 @@ SELECT id_orden AS orden_mayor_monto, total_orden as monto FROM orden WHERE tota
 SELECT nombre_producto AS cafe_mas_caro, precio_producto FROM producto WHERE precio_producto = (SELECT MAX(precio_producto) FROM producto WHERE descripcion_producto LIKE '%CAFE%'); -- Devuelve el cafe mas caro
 SELECT nombre_medio_pago, descuento_medio_pago FROM medio_pago WHERE descuento_medio_pago = (SELECT MAX(descuento_medio_pago) FROM medio_pago); -- Devuelve el medio de pago con mas descuento
 SELECT nombre_cargo AS puesto_mas_pago , salario_cargo FROM cargo WHERE salario_cargo = (SELECT MAX(salario_cargo) FROM cargo WHERE nombre_cargo != 'apoderado'); -- Devuelve el puesto mejor pago diferente del apoderado
+
+SELECT nombre_producto AS productos_escasos, stock_producto FROM producto WHERE stock_producto = (SELECT MIN(stock_producto) FROM producto);
+SELECT nombre_cargo AS puesto_mas_pago , salario_cargo FROM cargo WHERE salario_cargo = (SELECT MIN(salario_cargo) FROM cargo WHERE nombre_cargo != 'apoderado');
+
+--EJERCICIO 7
+
+SELECT id_orden AS orden_pago_debito FROM orden WHERE medio_pago_id_medio_pago IN(SELECT id_medio_pago FROM medio_pago WHERE id_medio_pago = 1 ) -- DEVUELVE LAS ORDENES QUE PAGARON CON DEBITO
+SELECT nombre_empleado FROM empleado WHERE cargo_id IN (SELECT id_cargo FROM cargo  WHERE nombre_cargo IN ('Marketing', 'Contador')) -- DEVUELVE LOS EMPLEADOS DE MARKETING Y CONTADORES QUE PUEDEN HACER HOME OFFICE
+
+-- EJERCICIO 8
+
+SELECT nombre_producto AS PRODUCTO, nombre_proveedor AS PROVEEDOR, precio_producto AS PRECIO FROM producto LEFT JOIN proveedor ON producto.id_producto = proveedor.id_proveedor -- DEVUELVE UN REPORTE DE LOS PRODUCTOS Y SUS PRECIOS
+SELECT nombre_empleado AS empleado, telefono_empleado AS contacto, email_empleado AS correo, nombre_cargo AS nombre_cargo  FROM empleado INNER JOIN cargo ON empleado.cargo_id = cargo.id_cargo -- DEVUELVE UN REPORTE DE TODOS LOS REGISTRADOS 
+SELECT id_orden AS orden, total_orden AS total, nombre_medio_pago as Medio_pago FROM orden INNER JOIN medio_pago ON orden.id_orden = medio_pago.id_medio_pago -- Devuelve como se pagaron las ordenes
+SELECT id_orden AS orden, total_orden AS total, nombre_empleado AS Mesero FROM orden INNER JOIN empleado ON orden.id_orden = empleado.id_empleado -- Devuelve quien atendio la mesa
+SELECT orden_id_orden AS Orden, nombre_producto AS producto, cantidad_orden_producto AS cantidad FROM producto INNER JOIN producto_orden ON producto.id_producto = producto_orden.producto_id_producto 
+
+-- EJERCICIO 9
+
+CREATE VIEW Reporte_2024_01_29 AS SELECT id_orden AS Orden, mesa_orden AS Mesa, nombre_empleado AS Mesero, total_orden AS Precio_Final, nombre_medio_pago AS Medio_Pago FROM orden INNER JOIN empleado ON orden.empleado_id_empleado = empleado.id_empleado INNER JOIN medio_pago ON orden.medio_pago_id_medio_pago = medio_pago.id_medio_pago WHERE fecha_orden = '2024-01-29' -- CREA UNA VISTA REPORTE DE LO FACTURADO EL DIA 29-01-2024
+CREATE VIEW Ficha_tecnica_empleados AS SELECT nombre_empleado AS empleado, telefono_empleado AS contacto, email_empleado AS correo, nombre_cargo AS nombre_cargo  FROM empleado INNER JOIN cargo ON empleado.cargo_id = cargo.id_cargo -- DEVUELVE una ficha tecnica de todos los empleados
